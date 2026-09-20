@@ -1,0 +1,75 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>事件溯源存储引擎</title>
+    <link rel="stylesheet" href="./assets/styles.css" />
+  </head>
+  <body>
+    <main class="shell">
+      <header>
+        <div>
+          <p class="eyebrow">IndexedDB + Web Worker</p>
+          <h1>事件溯源存储引擎</h1>
+          <p>事件追加、快照压缩、回滚、时间旅行、并发冲突与配额降级。</p>
+        </div>
+        <pre id="storageInfo" class="metric">正在连接 Worker…</pre>
+      </header>
+
+      <section class="grid">
+        <article class="card">
+          <h2>追加事件</h2>
+          <label>实体 ID<input id="entityId" value="user-1" /></label>
+          <label>名称<input id="entityName" value="Ada" /></label>
+          <label>期望版本（-1 表示不检查）<input id="expectedVersion" type="number" value="-1" /></label>
+          <button id="appendButton">追加 entity.updated</button>
+        </article>
+
+        <article class="card">
+          <h2>回滚</h2>
+          <label>回滚到版本<input id="rollbackVersion" type="number" min="1" value="1" /></label>
+          <button id="rollbackButton" class="danger">创建回滚事件</button>
+          <p class="hint">旧事件不会被删除；新回滚事件改变当前祖先。</p>
+        </article>
+
+        <article class="card">
+          <h2>时间旅行</h2>
+          <label>查询版本<input id="queryVersion" type="number" min="0" value="0" /></label>
+          <button id="stateAtButton">按版本恢复状态</button>
+          <button id="snapshotButton">创建压缩快照</button>
+          <button id="compactButton">压缩快照历史</button>
+        </article>
+      </section>
+
+      <section class="card benchmark">
+        <div>
+          <h2>10 万事件验收基准</h2>
+          <p>使用独立 benchmark 流，批量写入 100,000 个不可变事件，再做全量范围查询、全量重放和快照恢复。</p>
+        </div>
+        <button id="benchmarkButton">运行 10 万事件基准</button>
+      </section>
+
+      <section class="grid wide">
+        <article class="card">
+          <h2>当前状态</h2>
+          <pre id="stateOutput">尚未加载</pre>
+        </article>
+        <article class="card">
+          <h2>事件日志</h2>
+          <div id="eventList" class="list"></div>
+        </article>
+        <article class="card">
+          <h2>快照</h2>
+          <div id="snapshotList" class="list"></div>
+        </article>
+      </section>
+
+      <section class="card">
+        <h2>操作结果</h2>
+        <pre id="resultOutput">就绪</pre>
+      </section>
+    </main>
+    <script type="module" src="./src/app.js"></script>
+  </body>
+</html>
