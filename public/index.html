@@ -1,0 +1,74 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>事件溯源存储 · IndexedDB + Web Worker</title>
+  <style>
+    :root { color-scheme: light dark; }
+    body { font: 14px/1.5 system-ui, -apple-system, "Segoe UI", sans-serif; margin: 0; padding: 24px; }
+    h1 { font-size: 18px; margin: 0 0 4px; }
+    .sub { color: #888; margin-bottom: 16px; }
+    .grid { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; max-width: 1100px; }
+    .card { border: 1px solid #ccc5; border-radius: 10px; padding: 14px; background: #ffffff08; }
+    .card h2 { font-size: 14px; margin: 0 0 10px; }
+    button { font: inherit; padding: 6px 12px; border-radius: 8px; border: 1px solid #8886; background: #4f8cff; color: #fff; cursor: pointer; margin: 0 6px 6px 0; }
+    button.secondary { background: transparent; color: inherit; }
+    button:disabled { opacity: .5; cursor: default; }
+    input { font: inherit; padding: 4px 8px; width: 90px; border-radius: 6px; border: 1px solid #8886; background: transparent; color: inherit; }
+    pre { background: #0006; border-radius: 8px; padding: 10px; max-height: 260px; overflow: auto; font-size: 12px; white-space: pre-wrap; }
+    .row { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; margin-bottom: 8px; }
+    .metric { font-variant-numeric: tabular-nums; }
+    .ok { color: #35c46b; } .bad { color: #ff6b6b; } .dim { color: #888; }
+  </style>
+</head>
+<body>
+  <h1>事件溯源存储演示</h1>
+  <div class="sub">append-only 事件日志 · 快照压缩 · 回滚/分叉 · 时间旅行 · 乐观并发 · 配额降级（IndexedDB + Web Worker）</div>
+
+  <div class="grid">
+    <div class="card">
+      <h2>1. 十万级写入 / 查询性能</h2>
+      <div class="row">
+        <button id="bench">写入 100,000 条并查询</button>
+        <button id="clear" class="secondary">清空数据库</button>
+      </div>
+      <pre id="benchOut">就绪。</pre>
+    </div>
+
+    <div class="card">
+      <h2>2. 回滚 + 快照恢复</h2>
+      <div class="row">
+        <button id="append10">追加 10 个 inc</button>
+        <button id="snap">手动快照</button>
+        回滚到 seq <input id="rbSeq" value="4" />
+        <button id="rollback">回滚</button>
+        <button id="state">读取当前状态</button>
+      </div>
+      <pre id="rbOut">就绪。</pre>
+    </div>
+
+    <div class="card">
+      <h2>3. 时间旅行查询</h2>
+      <div class="row">
+        物理位点 <input id="ttPoint" value="0" />
+        <button id="tt">查询该点状态/事件数</button>
+        <span class="dim" id="ttHint"></span>
+      </div>
+      <pre id="ttOut">就绪。</pre>
+    </div>
+
+    <div class="card">
+      <h2>4. 并发写 / 配额降级</h2>
+      <div class="row">
+        <button id="concurrent">50 个并发 append</button>
+        <button id="quota">模拟配额：切换只读</button>
+        <button id="resume" class="secondary">恢复</button>
+      </div>
+      <pre id="concOut">就绪。</pre>
+    </div>
+  </div>
+
+  <script type="module" src="./demo.js"></script>
+</body>
+</html>

@@ -1,0 +1,11 @@
+{
+  "name": "event-store",
+  "version": "1.0.0",
+  "description": "Append-only event store with snapshots, rollback and time-travel queries on IndexedDB + Web Worker",
+  "type": "module",
+  "scripts": {
+    "test": "node --test tests/",
+    "bench": "node tests/bench.js",
+    "serve": "python3 -m http.server 8123"
+  }
+}
